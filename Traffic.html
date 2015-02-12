@@ -8,14 +8,14 @@
   var timeStep = 1, timeTotal = 300, distance = 50;
   var firstCar = 0, lastCar = 0, clock = 0; newCarPob = 0.9;
   var cars = [];
-  var road = [];
+  var road = [];  // just an array of each car's avg speed, right?  maybe rename to averageSpeeds[] or something like that?
   
   function Vehicle(N, B, t0) {
     this.number = N;
     this.speed = 1 + 2 * Math.random();
     this.enRoute = true;
     this.position = 1;
-    this.behind = B;
+    this.behind = B;     // this is the number of the car that's in front of it??  
     this.startTime = t0;
     this.endTime = 0;
     this.averageSpeed = 0;
@@ -29,27 +29,21 @@
     }
   }
   
-  for (var time = 0; time <= timeTotal; time++){
-    clock = time;
-    lastCar = cars.length - 1;
-    if (cars.length > 1){
-      moveTraffic(lastCar); 
-    };
-    newTraffic(time);
-  };
+/// moved block of code that was here to bottom with rest of main program code
 
   function newTraffic(i) {
     if (Math.random() > newCarPob){
       var x = cars.length
       var transfer = new Vehicle(x, x-1, i);
       cars.push(transfer);
-      return lastCar = x-1;
+      return lastCar = x-1;         // why return?  when calling this, you're never using... 
+                                    //the function to retrieve that value; you're just setting it.
     } 
-    else {
+    else { ///    <------------  ??
     };
   }
 
-  function moveTraffic(lastCar){
+  function moveTraffic(lastCar){    // awesome function!  very efficient, modular, and descriptive. :)
     for (var N = 0; N <= lastCar; N ++ ){
       checkSpeed(N);
       cars[N].updatePosition(); 
@@ -57,15 +51,23 @@
   }
 
   function checkSpeed(N){
-    var d = (cars[N].speed * timeStep) + cars[N].position;
+    var d = (cars[N].speed * timeStep) + cars[N].position;  // d? hmm.. ok it's distance.. wait, total distance/displacement.  got it!
     var b = cars[N].behind
     if (N != firstCar){
-      if (d > cars[b].position - 0.05){
+      if (d > cars[b].position - 0.05){    // very nice
         cars[N].speed = cars[b].speed;
       };
     };
   }
-
+  
+  for (var time = 0; time <= timeTotal; time++){    // part of main program loop,  now moved to bottom with rest.
+    clock = time;
+    lastCar = cars.length - 1;
+    if (cars.length > 1){      // first car won't move until there's one behind it?   Maybe you have a good reason I'm not seeing
+      moveTraffic(lastCar); 
+    };
+    newTraffic(time);
+  };
   console.log('number of cars ' + cars.length);
   console.log(road);
   var sum = 0;
